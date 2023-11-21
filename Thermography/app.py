@@ -1,5 +1,6 @@
 import sys
 import Function.Basics as Basics
+from Function.Methods import Fourier as fm
 
 from PySide6 import QtWidgets as Wigdets
 from PySide6 import QtGui as Gui
@@ -7,13 +8,6 @@ from PySide6 import QtMultimedia as Media
 from pathlib import Path
 from UI.Ui_principal import Ui_MainWindow as Win
 from cv2.typing import MatLike
-
-
-# from Function.Basics import Thermogram as tg , config as cfg
-# import Function.Basics as bsf
-# from Function.Methods import Fourier as fm
-
- 
 
 # Only needed for access to command line arguments
 
@@ -26,29 +20,20 @@ class MainWindow(Wigdets.QMainWindow):
     __TempPath          = str             # Represents the path of the temporal work area
     mediaPlayer         = Media.QMediaPlayer()
     video               = MatLike # Esta Variable almacena el video para procesamiento por OpenCV
-    dataExperiment      = {'FrameRate':int,'Modulation':float,'ModulationPeriod':float,'FramePeriod':int, 'FramesByPeriod':int , 'Periods': int , 'InitFrame': int,'Frames':int}
+    dataExperiment      = {'FrameRate':int,'Modulation':float,'ModulationPeriod':float,'FramePeriod':int, 'FramesByPeriod':int , 'Periods': int , 'InitFrame': int,'Frames':int,'FullImage':False}
     count               = int         
     progress            = 0
+    mf                  = fm()
+    
 
-
-
-    Processing          = 0
-    ExecuteMethod       = False
-    Porcent             = 0
     referenceSenSignal  = None
     referenceCosSignal  = None
-    method_selected     = None
     # __thermography      = tg()
     # __fourier_method    = fm()
     
-    
-
-
     """ Lamda Functions Section"""
     __absPath = lambda _ , p :  str(Path(p).parent) # Returns the absolut path of the file passed
 
-
-    
     # Se crea el modelo de datos para insertar datos en listas
     listModelItem = Gui.QStandardItemModel()
     
@@ -60,6 +45,11 @@ class MainWindow(Wigdets.QMainWindow):
 
         self.ui.progressBar.setValue(0)
         self.ui.videoSlider.setValue(0)
+
+        validator = Gui.QDoubleValidator()
+        validator.setNotation(Gui.QDoubleValidator.ScientificNotation)
+        self.ui.wNFactor.setValidator(validator)
+        self.ui.wKN_current.setValidator(validator)
 
         self.ui.actionOpen.triggered.connect(lambda: Basics.openFile(self)) # Se configura la accion del menu para abrir archivo de video 
         self.mediaPlayer.setVideoOutput(self.ui.mediaPlayer)  # Se configura el control que servirà de repoductor multimedia 
@@ -74,16 +64,15 @@ class MainWindow(Wigdets.QMainWindow):
         self.ui.videoSlider.valueChanged.connect(lambda: Basics.move_video(self))
         self.mediaPlayer.positionChanged.connect(lambda: Basics.media_position(self))
         self.ui.progressBar.valueChanged.connect(lambda: Basics.setProgress(self))
+        self.ui.btnFourier_Execute.clicked.connect(lambda: Basics.fourierExecute(self))
+        self.ui.btnFullImage.clicked.connect(lambda: Basics.setFullImage(self))
+        
 
         # Se registra la aplicacion como receptor de eventos para la clase que procesa el metodo de fourier
-        # self.__fourier_method.register(self)
+        self.mf.register(self)
         # self.__thermography.register(self)
 
-        # validator = Gui.QDoubleValidator()
-        # validator.setNotation(Gui.QDoubleValidator.ScientificNotation)
-
-        # self.config = cfg(self.__ui)
-        # self.__ui.wNLineEdit.setValidator(validator)
+        
 
         # # Se configura el evento de seleccionar un archivo de imagen de la lista de images extraidos
         # # self.__ui.list_images.currentItemChanged.connect(functools.partial(bf.firstPhase_imgSelected, self))
@@ -103,7 +92,15 @@ class MainWindow(Wigdets.QMainWindow):
     
         # # Se ejecuta cada que se selecciona el metodo de proceso de fourier
         # self.__ui.btnFourier.clicked.connect(lambda: bf.Method_selected(self, 2))
-    
+
+    def Experiment_Changed(self, event):
+        self.ui.framesByLockInPeriod.setValue(event['FramesByPeriod'])
+        self.ui.digitalFrequencyK.setValue(event['K'])
+        self.ui.wNFactor.setText("{:.3f}{:+.3f}j".format(event['W'].real, event['W'].imag))
+
+    def FourierFactors_Changed(self, event):
+        self.ui.wKN_current.setText("{:.3f}{:+.3f}j".format(event['WKN'].real, event['W'].imag))
+
     # Se ejecuta cada que se actualiza el valor de la barra de progreso
     def Progress_changed(self, event):
         self.ui.progressBar.setValue(event)

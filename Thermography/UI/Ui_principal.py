@@ -17,15 +17,11 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtMultimediaWidgets import QVideoWidget
-from PySide6.QtWidgets import (QAbstractItemView, QAbstractScrollArea, QApplication, QDoubleSpinBox,
-    QFormLayout, QFrame, QGraphicsView, QGridLayout,
+from PySide6.QtWidgets import (QApplication, QDoubleSpinBox, QFormLayout, QFrame,
     QHBoxLayout, QLabel, QLayout, QLineEdit,
-    QListWidget, QListWidgetItem, QMainWindow, QMenu,
-    QMenuBar, QProgressBar, QPushButton, QRadioButton,
-    QSizePolicy, QSlider, QSpinBox, QStatusBar,
-    QTabWidget, QVBoxLayout, QWidget)
-
-from pyqtgraph import PlotWidget
+    QMainWindow, QMenu, QMenuBar, QProgressBar,
+    QPushButton, QSizePolicy, QSlider, QSpinBox,
+    QStatusBar, QTabWidget, QVBoxLayout, QWidget)
 import UI.resources.Thermography_rc
 
 class Ui_MainWindow(object):
@@ -33,7 +29,7 @@ class Ui_MainWindow(object):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setWindowModality(Qt.ApplicationModal)
-        MainWindow.resize(975, 725)
+        MainWindow.resize(975, 754)
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -336,53 +332,10 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.parms_info)
 
-        self.parms_method = QFrame(self.Parameters)
-        self.parms_method.setObjectName(u"parms_method")
-        self.parms_method.setFrameShape(QFrame.StyledPanel)
-        self.parms_method.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_5 = QVBoxLayout(self.parms_method)
-        self.verticalLayout_5.setSpacing(5)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setSizeConstraint(QLayout.SetDefaultConstraint)
-        self.verticalLayout_5.setContentsMargins(2, 2, 2, 2)
-        self.lblInfo_2 = QLabel(self.parms_method)
-        self.lblInfo_2.setObjectName(u"lblInfo_2")
-        sizePolicy3.setHeightForWidth(self.lblInfo_2.sizePolicy().hasHeightForWidth())
-        self.lblInfo_2.setSizePolicy(sizePolicy3)
-        self.lblInfo_2.setFrameShape(QFrame.Box)
-        self.lblInfo_2.setFrameShadow(QFrame.Raised)
-        self.lblInfo_2.setAlignment(Qt.AlignCenter)
+        self.btnFullImage = QPushButton(self.Parameters)
+        self.btnFullImage.setObjectName(u"btnFullImage")
 
-        self.verticalLayout_5.addWidget(self.lblInfo_2)
-
-        self.frame = QFrame(self.parms_method)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_6 = QVBoxLayout(self.frame)
-        self.verticalLayout_6.setSpacing(5)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(5, 5, 5, 5)
-        self.btnGeometry = QRadioButton(self.frame)
-        self.btnGeometry.setObjectName(u"btnGeometry")
-
-        self.verticalLayout_6.addWidget(self.btnGeometry)
-
-        self.btnFourPoints = QRadioButton(self.frame)
-        self.btnFourPoints.setObjectName(u"btnFourPoints")
-
-        self.verticalLayout_6.addWidget(self.btnFourPoints)
-
-        self.btnFourier = QRadioButton(self.frame)
-        self.btnFourier.setObjectName(u"btnFourier")
-
-        self.verticalLayout_6.addWidget(self.btnFourier)
-
-
-        self.verticalLayout_5.addWidget(self.frame)
-
-
-        self.verticalLayout_2.addWidget(self.parms_method)
+        self.verticalLayout_2.addWidget(self.btnFullImage)
 
 
         self.horizontalLayout_2.addWidget(self.Parameters)
@@ -391,6 +344,7 @@ class Ui_MainWindow(object):
         self.Process.setObjectName(u"Process")
         self.tabVideo = QWidget()
         self.tabVideo.setObjectName(u"tabVideo")
+        self.tabVideo.setFocusPolicy(Qt.TabFocus)
         self.verticalLayout_8 = QVBoxLayout(self.tabVideo)
         self.verticalLayout_8.setSpacing(2)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
@@ -504,328 +458,174 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_8.setStretch(0, 4)
         self.Process.addTab(self.tabVideo, "")
-        self.tabProcessing = QWidget()
-        self.tabProcessing.setObjectName(u"tabProcessing")
-        self.verticalLayout_9 = QVBoxLayout(self.tabProcessing)
-        self.verticalLayout_9.setSpacing(5)
+        self.tabFourierMethod = QWidget()
+        self.tabFourierMethod.setObjectName(u"tabFourierMethod")
+        self.verticalLayout_9 = QVBoxLayout(self.tabFourierMethod)
+        self.verticalLayout_9.setSpacing(4)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.verticalLayout_9.setContentsMargins(2, 2, 2, 2)
-        self.Process_Phase = QTabWidget(self.tabProcessing)
-        self.Process_Phase.setObjectName(u"Process_Phase")
-        self.Process_Phase.setTabPosition(QTabWidget.West)
-        self.get_images = QWidget()
-        self.get_images.setObjectName(u"get_images")
-        self.horizontalLayout_4 = QHBoxLayout(self.get_images)
-        self.horizontalLayout_4.setSpacing(5)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalLayout_4.setContentsMargins(1, 1, 1, 1)
-        self.img_phase_1 = QFrame(self.get_images)
-        self.img_phase_1.setObjectName(u"img_phase_1")
-        self.img_phase_1.setFrameShape(QFrame.Box)
-        self.img_phase_1.setFrameShadow(QFrame.Raised)
-        self.img_phase_1.setLineWidth(2)
-        self.gridLayout = QGridLayout(self.img_phase_1)
-        self.gridLayout.setSpacing(5)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(5, 5, 5, 5)
-        self.img_p_1_1 = QLabel(self.img_phase_1)
-        self.img_p_1_1.setObjectName(u"img_p_1_1")
-        self.img_p_1_1.setFrameShape(QFrame.Box)
-        self.img_p_1_1.setFrameShadow(QFrame.Raised)
-        self.img_p_1_1.setLineWidth(2)
-
-        self.gridLayout.addWidget(self.img_p_1_1, 0, 0, 1, 1)
-
-        self.img_p_1_2 = QLabel(self.img_phase_1)
-        self.img_p_1_2.setObjectName(u"img_p_1_2")
-        self.img_p_1_2.setFrameShape(QFrame.Box)
-        self.img_p_1_2.setFrameShadow(QFrame.Raised)
-        self.img_p_1_2.setLineWidth(2)
-
-        self.gridLayout.addWidget(self.img_p_1_2, 0, 1, 1, 1)
-
-        self.img_p_1_3 = QLabel(self.img_phase_1)
-        self.img_p_1_3.setObjectName(u"img_p_1_3")
-        self.img_p_1_3.setFrameShape(QFrame.Box)
-        self.img_p_1_3.setFrameShadow(QFrame.Raised)
-        self.img_p_1_3.setLineWidth(2)
-
-        self.gridLayout.addWidget(self.img_p_1_3, 1, 0, 1, 2)
-
-
-        self.horizontalLayout_4.addWidget(self.img_phase_1)
-
-        self.data_phase_1 = QFrame(self.get_images)
-        self.data_phase_1.setObjectName(u"data_phase_1")
-        self.data_phase_1.setFrameShape(QFrame.Box)
-        self.data_phase_1.setFrameShadow(QFrame.Raised)
-        self.data_phase_1.setLineWidth(2)
-        self.verticalLayout_7 = QVBoxLayout(self.data_phase_1)
-        self.verticalLayout_7.setSpacing(5)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.verticalLayout_7.setContentsMargins(2, 2, 2, 2)
-        self.frame_2 = QFrame(self.data_phase_1)
+        self.frame_2 = QFrame(self.tabFourierMethod)
         self.frame_2.setObjectName(u"frame_2")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
-        self.frame_2.setSizePolicy(sizePolicy7)
         self.frame_2.setFrameShape(QFrame.Box)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.frame_2.setLineWidth(2)
-        self.formLayout_3 = QFormLayout(self.frame_2)
-        self.formLayout_3.setObjectName(u"formLayout_3")
-        self.formLayout_3.setHorizontalSpacing(4)
-        self.formLayout_3.setVerticalSpacing(4)
-        self.formLayout_3.setContentsMargins(4, 4, 4, 4)
-        self.heightLabel_2 = QLabel(self.frame_2)
-        self.heightLabel_2.setObjectName(u"heightLabel_2")
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_4.setSpacing(3)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(3, 3, 3, 3)
+        self.Fourier_plot = QWidget(self.frame_2)
+        self.Fourier_plot.setObjectName(u"Fourier_plot")
 
-        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.heightLabel_2)
+        self.horizontalLayout_4.addWidget(self.Fourier_plot)
 
-        self.heightPhase = QSpinBox(self.frame_2)
-        self.heightPhase.setObjectName(u"heightPhase")
-        sizePolicy4.setHeightForWidth(self.heightPhase.sizePolicy().hasHeightForWidth())
-        self.heightPhase.setSizePolicy(sizePolicy4)
-        self.heightPhase.setMaximum(1080)
-
-        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.heightPhase)
-
-        self.widthLabel_2 = QLabel(self.frame_2)
-        self.widthLabel_2.setObjectName(u"widthLabel_2")
-
-        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.widthLabel_2)
-
-        self.widthPhase = QSpinBox(self.frame_2)
-        self.widthPhase.setObjectName(u"widthPhase")
-        sizePolicy4.setHeightForWidth(self.widthPhase.sizePolicy().hasHeightForWidth())
-        self.widthPhase.setSizePolicy(sizePolicy4)
-        self.widthPhase.setMaximum(1080)
-
-        self.formLayout_3.setWidget(1, QFormLayout.FieldRole, self.widthPhase)
-
-        self.framesToProcessLabel = QLabel(self.frame_2)
-        self.framesToProcessLabel.setObjectName(u"framesToProcessLabel")
-
-        self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.framesToProcessLabel)
-
-        self.framesToProcess = QSpinBox(self.frame_2)
-        self.framesToProcess.setObjectName(u"framesToProcess")
-        sizePolicy4.setHeightForWidth(self.framesToProcess.sizePolicy().hasHeightForWidth())
-        self.framesToProcess.setSizePolicy(sizePolicy4)
-        self.framesToProcess.setReadOnly(True)
-        self.framesToProcess.setMaximum(100000)
-
-        self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.framesToProcess)
-
-        self.framesPerPeriodLabel = QLabel(self.frame_2)
-        self.framesPerPeriodLabel.setObjectName(u"framesPerPeriodLabel")
-
-        self.formLayout_3.setWidget(3, QFormLayout.LabelRole, self.framesPerPeriodLabel)
-
-        self.framesPerPeriod = QSpinBox(self.frame_2)
-        self.framesPerPeriod.setObjectName(u"framesPerPeriod")
-        sizePolicy4.setHeightForWidth(self.framesPerPeriod.sizePolicy().hasHeightForWidth())
-        self.framesPerPeriod.setSizePolicy(sizePolicy4)
-        self.framesPerPeriod.setReadOnly(True)
-        self.framesPerPeriod.setMaximum(100000)
-
-        self.formLayout_3.setWidget(3, QFormLayout.FieldRole, self.framesPerPeriod)
-
-        self.periodsLabel = QLabel(self.frame_2)
-        self.periodsLabel.setObjectName(u"periodsLabel")
-
-        self.formLayout_3.setWidget(4, QFormLayout.LabelRole, self.periodsLabel)
-
-        self.periods = QSpinBox(self.frame_2)
-        self.periods.setObjectName(u"periods")
-        sizePolicy4.setHeightForWidth(self.periods.sizePolicy().hasHeightForWidth())
-        self.periods.setSizePolicy(sizePolicy4)
-        self.periods.setReadOnly(True)
-        self.periods.setMaximum(100000)
-
-        self.formLayout_3.setWidget(4, QFormLayout.FieldRole, self.periods)
-
-        self.digital_frequencySpinBox = QSpinBox(self.frame_2)
-        self.digital_frequencySpinBox.setObjectName(u"digital_frequencySpinBox")
-        sizePolicy4.setHeightForWidth(self.digital_frequencySpinBox.sizePolicy().hasHeightForWidth())
-        self.digital_frequencySpinBox.setSizePolicy(sizePolicy4)
-        self.digital_frequencySpinBox.setMaximum(100000)
-
-        self.formLayout_3.setWidget(5, QFormLayout.FieldRole, self.digital_frequencySpinBox)
-
-        self.digital_frequencyLabel = QLabel(self.frame_2)
-        self.digital_frequencyLabel.setObjectName(u"digital_frequencyLabel")
-        self.digital_frequencyLabel.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
-        self.formLayout_3.setWidget(5, QFormLayout.LabelRole, self.digital_frequencyLabel)
-
-        self.wNLabel = QLabel(self.frame_2)
-        self.wNLabel.setObjectName(u"wNLabel")
-
-        self.formLayout_3.setWidget(6, QFormLayout.LabelRole, self.wNLabel)
-
-        self.wNLineEdit = QLineEdit(self.frame_2)
-        self.wNLineEdit.setObjectName(u"wNLineEdit")
-
-        self.formLayout_3.setWidget(6, QFormLayout.FieldRole, self.wNLineEdit)
-
-
-        self.verticalLayout_7.addWidget(self.frame_2)
-
-        self.frame_3 = QFrame(self.data_phase_1)
+        self.frame_3 = QFrame(self.frame_2)
         self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.Box)
+        self.frame_3.setFrameShape(QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QFrame.Raised)
-        self.frame_3.setLineWidth(2)
-        self.verticalLayout_10 = QVBoxLayout(self.frame_3)
-        self.verticalLayout_10.setSpacing(0)
+        self.verticalLayout_7 = QVBoxLayout(self.frame_3)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.lblInfo_Fourier = QLabel(self.frame_3)
+        self.lblInfo_Fourier.setObjectName(u"lblInfo_Fourier")
+        sizePolicy3.setHeightForWidth(self.lblInfo_Fourier.sizePolicy().hasHeightForWidth())
+        self.lblInfo_Fourier.setSizePolicy(sizePolicy3)
+        self.lblInfo_Fourier.setFrameShape(QFrame.Box)
+        self.lblInfo_Fourier.setLineWidth(2)
+        self.lblInfo_Fourier.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_7.addWidget(self.lblInfo_Fourier)
+
+        self.formFrame = QFrame(self.frame_3)
+        self.formFrame.setObjectName(u"formFrame")
+        self.formFrame.setFrameShape(QFrame.Box)
+        self.formFrame.setFrameShadow(QFrame.Raised)
+        self.formFrame.setLineWidth(2)
+        self.verticalLayout_10 = QVBoxLayout(self.formFrame)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
-        self.list_images = QListWidget(self.frame_3)
-        self.list_images.setObjectName(u"list_images")
-        self.list_images.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.list_images.setItemAlignment(Qt.AlignCenter)
+        self.formLayout_5 = QFormLayout()
+        self.formLayout_5.setObjectName(u"formLayout_5")
+        self.formLayout_5.setContentsMargins(4, 4, 4, 4)
+        self.digitalFrequencyLabel = QLabel(self.formFrame)
+        self.digitalFrequencyLabel.setObjectName(u"digitalFrequencyLabel")
 
-        self.verticalLayout_10.addWidget(self.list_images)
+        self.formLayout_5.setWidget(0, QFormLayout.LabelRole, self.digitalFrequencyLabel)
 
+        self.digitalFrequency = QDoubleSpinBox(self.formFrame)
+        self.digitalFrequency.setObjectName(u"digitalFrequency")
 
-        self.verticalLayout_7.addWidget(self.frame_3)
+        self.formLayout_5.setWidget(0, QFormLayout.FieldRole, self.digitalFrequency)
 
-        self.frame_9 = QFrame(self.data_phase_1)
-        self.frame_9.setObjectName(u"frame_9")
-        self.frame_9.setFrameShape(QFrame.StyledPanel)
-        self.frame_9.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_14 = QVBoxLayout(self.frame_9)
-        self.verticalLayout_14.setSpacing(2)
-        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
-        self.verticalLayout_14.setContentsMargins(2, 2, 2, 2)
-        self.btnSeparate = QPushButton(self.frame_9)
-        self.btnSeparate.setObjectName(u"btnSeparate")
-        icon3 = QIcon()
-        iconThemeName = u"emblem-symbolic-link"
-        if QIcon.hasThemeIcon(iconThemeName):
-            icon3 = QIcon.fromTheme(iconThemeName)
-        else:
-            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+        self.frameRateLabel_2 = QLabel(self.formFrame)
+        self.frameRateLabel_2.setObjectName(u"frameRateLabel_2")
 
-        self.btnSeparate.setIcon(icon3)
+        self.formLayout_5.setWidget(1, QFormLayout.LabelRole, self.frameRateLabel_2)
 
-        self.verticalLayout_14.addWidget(self.btnSeparate)
+        self.frameRateSpinBox = QSpinBox(self.formFrame)
+        self.frameRateSpinBox.setObjectName(u"frameRateSpinBox")
 
+        self.formLayout_5.setWidget(1, QFormLayout.FieldRole, self.frameRateSpinBox)
 
-        self.verticalLayout_7.addWidget(self.frame_9)
+        self.framesByLockInPeriodLabel = QLabel(self.formFrame)
+        self.framesByLockInPeriodLabel.setObjectName(u"framesByLockInPeriodLabel")
+        self.framesByLockInPeriodLabel.setScaledContents(True)
+        self.framesByLockInPeriodLabel.setWordWrap(True)
 
+        self.formLayout_5.setWidget(2, QFormLayout.LabelRole, self.framesByLockInPeriodLabel)
 
-        self.horizontalLayout_4.addWidget(self.data_phase_1)
+        self.framesByLockInPeriod = QSpinBox(self.formFrame)
+        self.framesByLockInPeriod.setObjectName(u"framesByLockInPeriod")
 
-        self.horizontalLayout_4.setStretch(0, 3)
-        self.horizontalLayout_4.setStretch(1, 1)
-        self.Process_Phase.addTab(self.get_images, "")
-        self.Method_Appliying = QWidget()
-        self.Method_Appliying.setObjectName(u"Method_Appliying")
-        self.Method_Appliying.setLayoutDirection(Qt.LeftToRight)
-        self.horizontalLayout_5 = QHBoxLayout(self.Method_Appliying)
-        self.horizontalLayout_5.setSpacing(5)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.horizontalLayout_5.setContentsMargins(2, 2, 2, 2)
-        self.frame_4 = QFrame(self.Method_Appliying)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setFrameShape(QFrame.Box)
-        self.frame_4.setFrameShadow(QFrame.Raised)
-        self.frame_4.setLineWidth(2)
-        self.verticalLayout_13 = QVBoxLayout(self.frame_4)
-        self.verticalLayout_13.setSpacing(3)
-        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.verticalLayout_13.setContentsMargins(2, 2, 2, 2)
-        self.plotSignalReference = PlotWidget(self.frame_4)
-        self.plotSignalReference.setObjectName(u"plotSignalReference")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Maximum)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(10)
-        sizePolicy8.setHeightForWidth(self.plotSignalReference.sizePolicy().hasHeightForWidth())
-        self.plotSignalReference.setSizePolicy(sizePolicy8)
-        self.plotSignalReference.setMinimumSize(QSize(0, 200))
-        self.plotSignalReference.setMaximumSize(QSize(16777215, 200))
-        self.plotSignalReference.setLayoutDirection(Qt.LeftToRight)
-        self.plotSignalReference.setFrameShape(QFrame.Box)
-        self.plotSignalReference.setFrameShadow(QFrame.Raised)
-        self.plotSignalReference.setLineWidth(2)
-        self.plotSignalReference.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
-        self.plotSignalReference.setAlignment(Qt.AlignCenter)
-        self.plotSignalReference.setRenderHints(QPainter.Antialiasing|QPainter.TextAntialiasing)
-        self.plotSignalReference.setTransformationAnchor(QGraphicsView.NoAnchor)
-        self.plotSignalReference.setResizeAnchor(QGraphicsView.AnchorViewCenter)
-        self.plotSignalReference.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
+        self.formLayout_5.setWidget(2, QFormLayout.FieldRole, self.framesByLockInPeriod)
 
-        self.verticalLayout_13.addWidget(self.plotSignalReference)
+        self.digitalFrequencyKLabel = QLabel(self.formFrame)
+        self.digitalFrequencyKLabel.setObjectName(u"digitalFrequencyKLabel")
 
-        self.ImgProcessed = QLabel(self.frame_4)
-        self.ImgProcessed.setObjectName(u"ImgProcessed")
-        self.ImgProcessed.setFrameShape(QFrame.Box)
-        self.ImgProcessed.setFrameShadow(QFrame.Raised)
-        self.ImgProcessed.setLineWidth(2)
+        self.formLayout_5.setWidget(3, QFormLayout.LabelRole, self.digitalFrequencyKLabel)
 
-        self.verticalLayout_13.addWidget(self.ImgProcessed)
+        self.digitalFrequencyK = QDoubleSpinBox(self.formFrame)
+        self.digitalFrequencyK.setObjectName(u"digitalFrequencyK")
+
+        self.formLayout_5.setWidget(3, QFormLayout.FieldRole, self.digitalFrequencyK)
+
+        self.wNFactorLabel = QLabel(self.formFrame)
+        self.wNFactorLabel.setObjectName(u"wNFactorLabel")
+
+        self.formLayout_5.setWidget(4, QFormLayout.LabelRole, self.wNFactorLabel)
+
+        self.wNFactor = QLineEdit(self.formFrame)
+        self.wNFactor.setObjectName(u"wNFactor")
+
+        self.formLayout_5.setWidget(4, QFormLayout.FieldRole, self.wNFactor)
 
 
-        self.horizontalLayout_5.addWidget(self.frame_4)
+        self.verticalLayout_10.addLayout(self.formLayout_5)
 
-        self.frame_5 = QFrame(self.Method_Appliying)
-        self.frame_5.setObjectName(u"frame_5")
-        self.frame_5.setFrameShape(QFrame.Box)
-        self.frame_5.setFrameShadow(QFrame.Raised)
-        self.frame_5.setLineWidth(2)
-        self.verticalLayout_11 = QVBoxLayout(self.frame_5)
-        self.verticalLayout_11.setSpacing(3)
-        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
-        self.verticalLayout_11.setContentsMargins(1, 1, 1, 1)
-        self.frame_6 = QFrame(self.frame_5)
-        self.frame_6.setObjectName(u"frame_6")
-        self.frame_6.setFrameShape(QFrame.StyledPanel)
-        self.frame_6.setFrameShadow(QFrame.Raised)
+        self.label_3 = QLabel(self.formFrame)
+        self.label_3.setObjectName(u"label_3")
+        sizePolicy3.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
+        self.label_3.setSizePolicy(sizePolicy3)
+        self.label_3.setFrameShape(QFrame.Box)
+        self.label_3.setFrameShadow(QFrame.Raised)
+        self.label_3.setLineWidth(2)
 
-        self.verticalLayout_11.addWidget(self.frame_6)
+        self.verticalLayout_10.addWidget(self.label_3)
 
-        self.frame_7 = QFrame(self.frame_5)
-        self.frame_7.setObjectName(u"frame_7")
-        self.frame_7.setFrameShape(QFrame.StyledPanel)
-        self.frame_7.setFrameShadow(QFrame.Raised)
+        self.formLayout_3 = QFormLayout()
+        self.formLayout_3.setObjectName(u"formLayout_3")
+        self.formLayout_3.setHorizontalSpacing(6)
+        self.formLayout_3.setVerticalSpacing(6)
+        self.formLayout_3.setContentsMargins(4, 4, 4, 4)
+        self.kCurrentLabel = QLabel(self.formFrame)
+        self.kCurrentLabel.setObjectName(u"kCurrentLabel")
 
-        self.verticalLayout_11.addWidget(self.frame_7)
+        self.formLayout_3.setWidget(0, QFormLayout.LabelRole, self.kCurrentLabel)
 
-        self.frame_8 = QFrame(self.frame_5)
-        self.frame_8.setObjectName(u"frame_8")
-        sizePolicy6.setHeightForWidth(self.frame_8.sizePolicy().hasHeightForWidth())
-        self.frame_8.setSizePolicy(sizePolicy6)
-        self.frame_8.setFrameShape(QFrame.StyledPanel)
-        self.frame_8.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_12 = QVBoxLayout(self.frame_8)
-        self.verticalLayout_12.setSpacing(0)
-        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
-        self.verticalLayout_12.setContentsMargins(0, 0, 0, 0)
-        self.btnMethod = QPushButton(self.frame_8)
-        self.btnMethod.setObjectName(u"btnMethod")
+        self.k_current = QSpinBox(self.formFrame)
+        self.k_current.setObjectName(u"k_current")
 
-        self.verticalLayout_12.addWidget(self.btnMethod)
+        self.formLayout_3.setWidget(0, QFormLayout.FieldRole, self.k_current)
+
+        self.nCurrenLabel = QLabel(self.formFrame)
+        self.nCurrenLabel.setObjectName(u"nCurrenLabel")
+
+        self.formLayout_3.setWidget(1, QFormLayout.LabelRole, self.nCurrenLabel)
+
+        self.n_current = QSpinBox(self.formFrame)
+        self.n_current.setObjectName(u"n_current")
+
+        self.formLayout_3.setWidget(1, QFormLayout.FieldRole, self.n_current)
+
+        self.wKNLabel = QLabel(self.formFrame)
+        self.wKNLabel.setObjectName(u"wKNLabel")
+
+        self.formLayout_3.setWidget(2, QFormLayout.LabelRole, self.wKNLabel)
+
+        self.wKN_current = QLineEdit(self.formFrame)
+        self.wKN_current.setObjectName(u"wKN_current")
+
+        self.formLayout_3.setWidget(2, QFormLayout.FieldRole, self.wKN_current)
 
 
-        self.verticalLayout_11.addWidget(self.frame_8)
+        self.verticalLayout_10.addLayout(self.formLayout_3)
 
-        self.verticalLayout_11.setStretch(0, 1)
-        self.verticalLayout_11.setStretch(1, 2)
-        self.verticalLayout_11.setStretch(2, 1)
 
-        self.horizontalLayout_5.addWidget(self.frame_5)
+        self.verticalLayout_7.addWidget(self.formFrame)
 
-        self.horizontalLayout_5.setStretch(0, 5)
-        self.horizontalLayout_5.setStretch(1, 3)
-        self.Process_Phase.addTab(self.Method_Appliying, "")
+        self.btnFourier_Execute = QPushButton(self.frame_3)
+        self.btnFourier_Execute.setObjectName(u"btnFourier_Execute")
+        self.btnFourier_Execute.setEnabled(False)
+        self.btnFourier_Execute.setFlat(False)
 
-        self.verticalLayout_9.addWidget(self.Process_Phase)
+        self.verticalLayout_7.addWidget(self.btnFourier_Execute)
 
-        self.Process.addTab(self.tabProcessing, "")
+
+        self.horizontalLayout_4.addWidget(self.frame_3)
+
+        self.horizontalLayout_4.setStretch(0, 6)
+        self.horizontalLayout_4.setStretch(1, 2)
+
+        self.verticalLayout_9.addWidget(self.frame_2)
+
+        self.Process.addTab(self.tabFourierMethod, "")
         self.tabResult = QWidget()
         self.tabResult.setObjectName(u"tabResult")
         self.Process.addTab(self.tabResult, "")
@@ -855,14 +655,14 @@ class Ui_MainWindow(object):
         self.menuManual.setObjectName(u"menuManual")
         self.menuHelp = QMenu(self.menubar)
         self.menuHelp.setObjectName(u"menuHelp")
-        icon4 = QIcon()
+        icon3 = QIcon()
         iconThemeName = u"system-help"
         if QIcon.hasThemeIcon(iconThemeName):
-            icon4 = QIcon.fromTheme(iconThemeName)
+            icon3 = QIcon.fromTheme(iconThemeName)
         else:
-            icon4.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
+            icon3.addFile(u".", QSize(), QIcon.Normal, QIcon.Off)
 
-        self.menuHelp.setIcon(icon4)
+        self.menuHelp.setIcon(icon3)
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -882,7 +682,6 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.Process.setCurrentIndex(1)
-        self.Process_Phase.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -927,48 +726,27 @@ class Ui_MainWindow(object):
         self.frameWidth.setSuffix(QCoreApplication.translate("MainWindow", u"px", None))
         self.frameWidth.setPrefix("")
         self.durationLabel.setText(QCoreApplication.translate("MainWindow", u"Duration:", None))
-        self.lblInfo_2.setText(QCoreApplication.translate("MainWindow", u"Method", None))
-        self.btnGeometry.setText(QCoreApplication.translate("MainWindow", u"Geometry", None))
-        self.btnFourPoints.setText(QCoreApplication.translate("MainWindow", u"Four Points", None))
-        self.btnFourier.setText(QCoreApplication.translate("MainWindow", u"Fourier", None))
+        self.btnFullImage.setText(QCoreApplication.translate("MainWindow", u"Full Image", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Measurement related with", None))
         self.btnRew.setText(QCoreApplication.translate("MainWindow", u"REWIND", None))
         self.btnStart.setText(QCoreApplication.translate("MainWindow", u"PLAY", None))
         self.btnStop.setText(QCoreApplication.translate("MainWindow", u"STOP", None))
         self.btnFor.setText(QCoreApplication.translate("MainWindow", u"FORWARD", None))
         self.Process.setTabText(self.Process.indexOf(self.tabVideo), QCoreApplication.translate("MainWindow", u"Video", None))
-#if QT_CONFIG(tooltip)
-        self.img_p_1_1.setToolTip(QCoreApplication.translate("MainWindow", u"In this frame you can see the gray's scale original image provided by the video", None))
-#endif // QT_CONFIG(tooltip)
-        self.img_p_1_1.setText("")
-#if QT_CONFIG(tooltip)
-        self.img_p_1_2.setToolTip(QCoreApplication.translate("MainWindow", u"In this frame you can see the gray's scale original image provided by the video", None))
-#endif // QT_CONFIG(tooltip)
-        self.img_p_1_2.setText("")
-#if QT_CONFIG(tooltip)
-        self.img_p_1_3.setToolTip(QCoreApplication.translate("MainWindow", u"In this frame you can see the gray's scale original image provided by the video", None))
-#endif // QT_CONFIG(tooltip)
-        self.img_p_1_3.setText("")
-        self.heightLabel_2.setText(QCoreApplication.translate("MainWindow", u"Height", None))
-        self.heightPhase.setSuffix(QCoreApplication.translate("MainWindow", u"px", None))
-        self.heightPhase.setPrefix("")
-        self.widthLabel_2.setText(QCoreApplication.translate("MainWindow", u"Width", None))
-        self.widthPhase.setSuffix(QCoreApplication.translate("MainWindow", u"px", None))
-        self.widthPhase.setPrefix("")
-        self.framesToProcessLabel.setText(QCoreApplication.translate("MainWindow", u"Frames", None))
-        self.framesPerPeriodLabel.setText(QCoreApplication.translate("MainWindow", u"N", None))
-        self.periodsLabel.setText(QCoreApplication.translate("MainWindow", u"Periods", None))
-        self.digital_frequencyLabel.setText(QCoreApplication.translate("MainWindow", u"K", None))
-        self.wNLabel.setText(QCoreApplication.translate("MainWindow", u"WN", None))
-        self.btnSeparate.setText(QCoreApplication.translate("MainWindow", u"Separate", None))
-        self.Process_Phase.setTabText(self.Process_Phase.indexOf(self.get_images), QCoreApplication.translate("MainWindow", u"Separate", None))
-#if QT_CONFIG(tooltip)
-        self.plotSignalReference.setToolTip(QCoreApplication.translate("MainWindow", u"Locking Frequency", None))
-#endif // QT_CONFIG(tooltip)
-        self.ImgProcessed.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
-        self.btnMethod.setText(QCoreApplication.translate("MainWindow", u"Execute Method", None))
-        self.Process_Phase.setTabText(self.Process_Phase.indexOf(self.Method_Appliying), QCoreApplication.translate("MainWindow", u"Applying", None))
-        self.Process.setTabText(self.Process.indexOf(self.tabProcessing), QCoreApplication.translate("MainWindow", u"Processing", None))
+        self.lblInfo_Fourier.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Information</span></p></body></html>", None))
+        self.digitalFrequencyLabel.setText(QCoreApplication.translate("MainWindow", u"Lock-In Frequency", None))
+        self.digitalFrequency.setSuffix(QCoreApplication.translate("MainWindow", u"Hz", None))
+        self.frameRateLabel_2.setText(QCoreApplication.translate("MainWindow", u"Frame Rate", None))
+        self.frameRateSpinBox.setSuffix(QCoreApplication.translate("MainWindow", u"fps", None))
+        self.framesByLockInPeriodLabel.setText(QCoreApplication.translate("MainWindow", u"Frames by Lock-in Period (N)", None))
+        self.digitalFrequencyKLabel.setText(QCoreApplication.translate("MainWindow", u"Digital Frequency (K)", None))
+        self.wNFactorLabel.setText(QCoreApplication.translate("MainWindow", u"W Factor", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Current Frame</span></p></body></html>", None))
+        self.kCurrentLabel.setText(QCoreApplication.translate("MainWindow", u"K", None))
+        self.nCurrenLabel.setText(QCoreApplication.translate("MainWindow", u"N", None))
+        self.wKNLabel.setText(QCoreApplication.translate("MainWindow", u"W(K,N)", None))
+        self.btnFourier_Execute.setText(QCoreApplication.translate("MainWindow", u"Execute", None))
+        self.Process.setTabText(self.Process.indexOf(self.tabFourierMethod), QCoreApplication.translate("MainWindow", u"Fourier Method", None))
         self.Process.setTabText(self.Process.indexOf(self.tabResult), QCoreApplication.translate("MainWindow", u"Results", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuProcess.setTitle(QCoreApplication.translate("MainWindow", u"Process", None))

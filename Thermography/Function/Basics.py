@@ -10,19 +10,8 @@ from PySide6 import QtCore as Core
 from pathlib import Path
 from cv2.typing import MatLike
 
-# from Function import Methods as mt
-
-# win.digital_frequencySpinBox.setValue(self.fourier_method.K)
-# win.wNLineEdit.setText("{:.3f}".format(self.fourier_method.WN.real) + "{:+.3f}".format(self.fourier_method.WN.imag) + "j")
-
-getFramesByPorcentage = lambda x: round(x / 100)
-getRangeFrames2Process = lambda x,y: x-y
-openImage = lambda x: cv2.imread(str(x))
-getPeriods = lambda frames, frame_rate, modulation: frames / (modulation * frame_rate)
-getTime = lambda f, fr : divmod(f / fr, 60)
-
-
 __absFile = lambda p :  str(Path(p).name)   # Returns the file name of the file passed
+getTime = lambda f, fr : divmod(f / fr, 60)
 
 def setProgress(self):
     if self.ui.progressBar.value() == 100: self.ui.progressBar.setValue(0)
@@ -58,6 +47,7 @@ def setInitFrame(self):
 
 def setFrameRate(self):
     self.dataExperiment['FrameRate'] = self.ui.frameRate.value() # Obtenemos el framerate del video
+    self.ui.frameRateSpinBox.setValue(self.ui.frameRate.value())
 
 def setModulation(self): 
     self.dataExperiment['Modulation']       = self.ui.modulation.value()
@@ -65,7 +55,12 @@ def setModulation(self):
     self.dataExperiment['FramePeriod']      = round(1 / self.dataExperiment['FrameRate'],3)    
     self.dataExperiment['FramesByPeriod']   = math.floor(self.dataExperiment['ModulationPeriod'] / self.dataExperiment['FramePeriod'])
     self.dataExperiment['Periods']          = math.floor(self.dataExperiment['Frames'] / self.dataExperiment['FramesByPeriod'])
-    
+    self.ui.digitalFrequency.setValue(self.ui.modulation.value())
+    self.mf.Experiment = self.dataExperiment
+
+def fourierExecute(self):
+    self.mf.start(self.video,self.ui.statusbar,self.ui.progressBar)
+
 def calculateFrames(self , data : dict, Final: Wigdets.QSpinBox, Init: Wigdets.QSpinBox, Frames: Wigdets.QSpinBox):
     data['InitFrame'] = Init.value()
     data['Frames']    = Final.value() - Init.value()
@@ -77,7 +72,7 @@ def enablePlayerButtons(window:Win, value: bool)-> None:
     window.btnStart.setEnabled(value)
     window.btnStop.setEnabled(value)
     window.btnFor.setEnabled(value)
-    window.btnSeparate.setEnabled(value)
+    window.btnFourier_Execute.setEnabled(value)
 
 """
     This function check at the temp folder exist and its VAcio
@@ -92,10 +87,9 @@ def checkTempFolder(self):
     This function open the video to be process
 """
 def openVideo(video : cv2.VideoCapture, data : dict, sb : Wigdets.QStatusBar) -> MatLike: 
-    video.set(cv2.CAP_PROP_POS_FRAMES , data['InitFrame'] - 1)   # Se establece la posicion del video en el Frame Inicial
+    video.set(cv2.CAP_PROP_POS_FRAMES , data['InitFrame'])   # Se establece la posicion del video en el Frame Inicial
     sb.showMessage(f'Frame Init has been established to frame No.:{int(video.get(cv2.CAP_PROP_POS_FRAMES))}')  
-                
-
+            
 """
     This function presents a dialog windows to open the video file to be process
 """
@@ -127,40 +121,35 @@ def openFile(self):
     This Function obtains the RGB and grayscale Channels of a thermal image, then converts the rgb portion to grayscale
     and finally merges both grayscale images into weighted image one.
 """
-def RGBSepareProcess(img):
-    # convertimos la imagen seleccionada a escala de grises
-    __img = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)
 
-    # Obtenemos las dimensiones iniciales de la imagen
-    __H, __W , _ = img.shape
-    __H = int(__H/ 2)
+def setFullImage(self):
+    if self.dataExperiment['FullImage'] == False:
+        self.dataExperiment['FullImage'] == True
+    else:
+        self.dataExperiment['FullImage'] = False     
 
-    # segmentamos la Imagen en gris en las dos imagenes que la componen
-    __iA = __img[:__H,:]
-    __iB = __img[__H:,:]
+def imgDivide(img: MatLike) -> MatLike:
+    img = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY) # converts the image to gray scale
+    height  = int(img.shape[0] / 2)            # gets the size of image
+    width   = int(img.shape[1])
+    imgA    = img[:height,:]                   # gets the first image     
+    imgB    = img[height:,:]                   # gets the second image
+    
+    img     = cv2.addWeighted(imgA,0.5,imgB,0.5,0) # both images are fusioned  
 
-    __A = img[:__H,:]
-    __B = img[__H:,:]
+    clahe = cv2.createCLAHE(clipLimit=0.5, tileGridSize=(3,3)) # creates the kernel to filter apply
+    return clahe.apply(img)
 
-    __I = cv2.addWeighted(__iA, 0.5, __iB, 0.5, 0) # Fusionar las imágenes con un peso de 0.5 para cada una
 
-    # Apllicamos una normalizaciòn a la imagen
-    # __I = cv2.equalizeHist(__I)
 
-    # """
-    #      Ejecutamos el proceso de ecualizacion de la imagen, esto elimimina la sobre iluminacion
-    #      para esto emplearemos un kernel de 5,5
-    # """
 
-    clahe= cv2.createCLAHE(clipLimit=0.5, tileGridSize=(3,3))  # se crea la configuraciòn del filtro
-    __I = clahe.apply(__I)
 
-    """
     # Este segmento de codigo nos permite umbralizar la imagen
     # esta parte nos permitiria definir con claridad los  contornos que genera el gradiente de temperatura
-    __krn = 155
-    __const= 0
-    __I = cv2.adaptiveThreshold(__I,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,__krn,__const)
+    # __krn = 155
+    # __const= 0
+    # __I = cv2.adaptiveThreshold(__I,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,__krn,__const)
+    
     """
 
     # Se procesan las imagenes segmentadas para mostrarlas en la UI
@@ -231,53 +220,6 @@ def list_Fill(self, item):
     win.plotSignalReference.plot(self.referenceCosSignal, name='Coseno', pen = pg.mkPen('g',width = 3))  # Se grafica la seguna señal de referencia con linea de color verde
     win.periods.setValue(getPeriods(muestras, frame_rate,frequency))
 """
-
-def initprocess(self):
-    win.statusbar.showMessage('Extracting frames.............')
-    
-    # Se define el contador de frames procesados del video, asi como el procentaje de avance en la barra de progreso
-    __ct = 1
-    __x  = 0
-    
-    # Se definen las variables internas para el tamaño de imagen y adicionales
-    __H = int(0)
-    __W = int(0)
-
-    # Obtenemos la imagen desde el video bajo analisis
-    while True:
-        ret , im = self.capture.read()
-        if not ret:
-            break
-        else:
-            if win.initFrameSpinBox.value() <= __ct <= win.finalFrameSpinBox.value():
-                # Generamos el nombre del archivo para la imagen extraida
-                __filefirst = str(Path(self.firstFolder) / Path(f'frame{__ct}.png').as_posix())
-                __filesecond = str(Path(self.secondFolder) / Path(f'frame{__ct}.png').as_posix())
-            
-                # Inserta el nombre de archivo en la lista de imagenes extraidas
-                list_Fill(self, Path(__filefirst).stem)
-            
-                # Se guarda el fotograma extraido en RGB como archivo de imagen independiente formato png
-                cv2.imwrite(__filefirst, im)
-            
-                # Se procesa el fotograma, para convertirlo en escala de grises y fundir la parte a color
-                __H, __W , __I, _ , _ , _ = RGBSepareProcess(im)
-
-                # la imagen resultante se guarda en la carpeta temporal de segunda fase
-                cv2.imwrite(__filesecond,__I)
-                # En este segmento de codigo se determina que la barra de progreso avance 1% cada que se han procesado el numero de frames
-                # Correspondientes al 1% del total de frames bajo analisis
-                setProgress(self,__x) 
-                      
-            __x += 1
-            __ct += 1
-
-    # Se muestran las dimensiones de la imagen procesada en la Interface de usuario
-    win.heightPhase.setValue(__H)
-    win.widthPhase.setValue(__W)   
-    
-    win.statusbar.showMessage('Frames Extracted.............')         
-
 def initPlotReference(self: pg.PlotWidget):
     # Se configuran el color de fondo y parametros bàsicos de las graficas de las señales de referencia
     self.setBackground("w")
@@ -286,19 +228,4 @@ def initPlotReference(self: pg.PlotWidget):
     self.setLabel('left','Amplitude')
     self.setLabel('bottom','Frames',size = '12px')
 
-
-# This Function execute the selected method's analisys
-def execute(self):
-    # str( / Path(f'frame{__ct}.png').as_posix())
-    __m = ''
-    if self.fourier_method.Method == 0:
-        pass
-    if self.fourier_method.Method == 1:
-        pass
-    if self.fourier_method.Method == 2:
-         __m = 'Fourier'
-         self.fourier_method.Process()
-
-         
-    win.statusbar.showMessage(f'Thermographics lock in using {__m} Executing.............')
-    
+"""

@@ -1,171 +1,143 @@
+from PySide6 import QtWidgets as Wigdets
+import Function.Basics as Basics
+import numpy as np, cmath, cv2
 from PySide6.QtGui import QPixmap, QImage
-import cmath , cv2, sys, math
 from cv2.typing import MatLike
 from pathlib import Path
 
+
+
 class Fourier:
-    __method            = 0                  # Indica el methodo de procesamiento 
-    __frame_rate        = 0                  # Representa la frecuencia de Muestreo                                                     fs
-    __modulation        = 0                  # Representa la frecuencia de Modulacion del experimento                                   fe
-    __frame             = 1                  # Frame that is processing actually
 
-
-    __File_init         = 0                  # Number of initial frame 
-    __Final_frame       = 0                  # Final Frame Number
-    __current_frame     = None               # Frame (image) is in process
+    __Frame_Rate        = int                  # Representa la frecuencia de Muestreo                                                     fs
+    __modulation        = float                # Representa la frecuencia de Modulacion del experimento                                   fe
+    __init_frame        = int
+    __FramesByPeriod    = int
+    __Frames            = int
+    __Experiment        = dict
+    __Image_size        = bool
+    __count             = 1
+    __period            = 1
+    
     __listener          = []                 # Se inicializa el controlador de receptores de eventos
-    __secuence          = []                 # Contains the secuence of the all images processed 
 
-    __progress_value    = lambda _ , C , F: round((C/F)*100)                            # Calculate the value's progress bar when the frames is precessing
+    openedImage         = MatLike
     
-    openImage           = lambda _,x: cv2.imread(str(x))                                # Get's the image from the indicated file in path "x" 
-    
+    WN = lambda _, W,  n, K: pow(W,(n - 1) * (K - 1))
+
     def register(self, listener):               # Mètodo que registra a los receptores de eventos de esta clase
         self.__listener.append(listener)
     
     def unregister(self, listener):             # Mètodo que elimina el registro de los receptores de eventos
         self.__listener.remove(listener)
     
-    # Funcion que controla el evento de actualizacion de la barra de progreso
-    def progressValue(self):
-        for observador in self.__listener:
-            observador.Progress_changed(self.__progress_value(self.__Cuenta,self.__frames))
-
-    # Raises an event when the image in the current process changes
-    def showImage(self, v:QImage):
-        for observador in self.__listener:
-            observador.Image_changed(v)
+    @property
+    def W(self)->complex:
+        return cmath.exp(-1j*2*cmath.pi/self.N)
     
-
-    # this Function execute the fourier's method 
-    def Process(self):
-
-
-
-
-
-
-
-
-        for i in range(self.Frames):                  # Execute the process for all frames 
-            try:
-                __filesecond = str(Path(self.__path_file) / Path(f'frame{self.InitialFrame + i}.png').as_posix())
-                __img = self.openImage(__filesecond)
-                __H, __W , _ = __img.shape                                  # gets the image's dimensions
-                # every frame extracted from the original video is loaded    
-                
-
-                self.__Cuenta = i + 1
-                self.progressValue()
-                print (self.W)
-                iC = QImage(__img , __W , __H, QImage.Format_Grayscale8)    # convert the image processed to grayscale image
-                self.showImage(iC)                                          # Raise the image changed event
-
-            except:
-                print(sys.exc_info())
-
-
-  # Gets the progress's porcentage value of data processing 
     @property
-    def Progress_Count(self, value) ->int:
-        return self.__Cuenta
+    def N(self)-> int:
+        return self.__FramesByPeriod
 
-    # Gets the number of selected method in the choice box to process the data
-    @property
-    def Method(self)->int:
-        return self.__method
-
-    # Gets the number of frame to be process this value represents the "n" variable for fourier's method
-    @property
-    def Frames(self)-> int:
-        return int(self.FinalFrame - self.InitialFrame)
-     
-    # Gets the number of periods of the modulation signal that will be processed
-    @property
-    def Periods(self)-> int:
-        return 
-
-    # Gets the frame rate of video to be processed 
     @property
     def FrameRate(self)->int:
-        return self.__frame_rate
+        return self.__Frame_Rate
     
-   # Gets the modulation frequency that will be used in the fourier's method
     @property
-    def Modulation(self)->  int:
+    def Frames(self)->int:
+        return self.__Frames
+
+    @property
+    def Modulation(self)->float:
         return self.__modulation
-    
-   # Gets the number of the initial frame of the set of video's frames to be process
-    @property
-    def InitialFrame(self)->int:
-        return self.__File_init
-    
-    # Gets the number of frames that integrate the experiment   
-    @property
-    def FinalFrame(self) ->int:
-        return self.__Final_frame
 
-    # Gets the value of delta progress, how many frames represent a 1% of progress
-    @property
-    def deltaProgress(self)->int:
-        return int(self.Frames / 100)
-
-    # Gets the digital frequency of the experiment
     @property
     def K(self)-> int:
-        return round(self.FramesByPeriod * (self.Modulation / self.FrameRate) + 1) 
- 
+       return round(self.N * (self.Modulation / self.FrameRate) + 1)  
+    
     @property
-    def WN(self)-> complex:
-        return cmath.exp(-1j*2*cmath.pi/self.FramesByPeriod)
-   
+    def InitFrame(self)-> int:
+        return self.__init_frame
+    
     @property
-    def Frame(self) -> MatLike:
-        return self.__current_frame
+    def Experiment(self)->dict:
+        return self.__Experiment
+    
+    @property
+    def ImageFull(self)-> bool:
+        return self.__Image_size
 
     @property
-    def Frame_all(self) -> list:
-        return self.__secuence
+    def Thermogram(self):
+        return self.__termograma
+    
+    @Experiment.setter
+    def Experiment(self , value:dict):
+        self.__Experiment = value
+        self.Frames       = self.__Experiment['Frames']
+        self.FrameRate    = self.__Experiment['FrameRate']
+        self.N            = self.__Experiment['FramesByPeriod']
+        self.Modulation   = self.__Experiment['Modulation']
+        self.InitFrame    = self.__Experiment['InitFrame']
+        self.__Image_size = self.__Experiment['FullImage']
+        self.__Experiment['K'] = self.K
+        self.__Experiment['W'] = self.W
 
-    # Sets the progress's porcentage value of data processing 
-    @Progress_Count.setter
-    def Progress_Count(self, value):
-        self.__Cuenta = value
-        self.progressValue()
+        for observador in self.__listener:
+            observador.Experiment_Changed(self.__Experiment)
 
-    # Sets the number of selected method in the choice box to process the data, the data will be process only if fourier method is selected 
-    # Raise an Method selected is changed event 
-    @Method.setter
-    def Method(self, value):
-        self.__method = value
+    @ImageFull.setter
+    def ImageFull(self, value:bool):
+        self.__Image_size = value
 
-    # Sets the number of the initial frame of the set of video's frames will be process
-    @InitialFrame.setter
-    def InitialFrame(self,value):
-        self.__File_init = value
-
-    @FinalFrame.setter
-    def FinalFrame(self,value):
-        self.__Final_frame = value
-
-    # Sets the modulation frequency that will be used in the fourier's method and update the digital frequency automatically
     @Modulation.setter
-    def Modulation(self, value):
+    def Modulation(self, value: float):
         self.__modulation = value
 
-    # Sets the frame rate of video to be processed and raise and update the digital frequency automatically
+    @N.setter
+    def N(self, value: int):
+        self.__FramesByPeriod = value
+
+    @Frames.setter
+    def Frames(self,value):
+        self.__Frames = value
+
     @FrameRate.setter
-    def FrameRate(self, value):
-        self.__frame_rate = value
+    def FrameRate(self, value:int):
+        self.__Frame_Rate = value
 
-    @Frame.setter
-    def Frame(self , value:MatLike):
-        t = pow(self.WN,(self.__frame - 1) * (self.K - 1))
-        self.__current_frame = value
-        print(t)        
-        self.__frame =+ 1
-        
+    @InitFrame.setter
+    def InitFrame(self, value:int):
+        self.__init_frame = value
 
-    def __init__(self, Frames:int = 0 ):
-        self.__frames = Frames
+    def imgProcess(self , img: MatLike) -> MatLike:
+        self.__period = int(self.__count / self.N) + 1
+        return img * self.WN(self.W,self.__period,self.K)
+
+    def start(self, video:MatLike,sb : Wigdets.QStatusBar, pg: Wigdets.QProgressBar):
+        x,y,_ = self.openedImage.shape()
+
+        video.set(cv2.CAP_PROP_POS_FRAMES , self.InitFrame)   # Se establece la posicion del video en el Frame Inicial
+        i = 1 
+        while True:
+            sb.showMessage(f'Processing frame.:{i}')
+            pg.setValue((i+1)*100 /self.Frames)
+            ret, self.openedImage = video.read()
+            if not ret:
+                break
+            if self.ImageFull:
+                img = self.imgProcess(self.openedImage)
+            else:
+                self.openedImage = Basics.imgDivide(self.openedImage)
+                img = self.imgProcess(self.openedImage)
+            i += 1
+
+        sb.showMessage(f'Thermographic lock-in complete.....')
         
+    def __init__(self, experiment : dict ):
+        self.__Frames = experiment['Frames']
+        self.__Frame_Rate = experiment['FrameRate']
+
+    def __init__(self):
+        pass
+       
